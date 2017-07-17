@@ -29,7 +29,7 @@
         with Zend OPcache v7.1.6-1~ubuntu16.04.1+deb.sury.org+1, Copyright (c) 1999-2017, by Zend Technologies
         with Xdebug v2.5.5, Copyright (c) 2002-2017, by Derick Rethan
     ```
-5. Clone this repository (Linux version 14.04/16.04):
+5. Clone this repository (Ubuntu 14.04/16.04):
 
     ```
     $ sudo chmod -R 755 /var/www
@@ -46,7 +46,7 @@
     
     $ composer install
     ```
-6. Create virtual host on your local PC (Linux). (For Windows OS you can use Openserver or Xampp)
+6. Create virtual host on your local PC (Ubuntu 14.04/16.04). (For Windows OS you can use Openserver or Xampp)
     
     Create config file for virtual host `mvc.dev`:
     ```
@@ -70,7 +70,7 @@
             CustomLog ${APACHE_LOG_DIR}/access.log combined
     </VirtualHost>
     ````
-    Add host mvc.dev to `/etc/hosts`:
+    Add host `mvc.dev` to `/etc/hosts`:
     ````
     $ sudo nano /etc/hosts
     ````
