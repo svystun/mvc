@@ -51,7 +51,6 @@
     Create config file for virtual host `mvc.dev`:
     ```
     $ sudo nano /etc/apache2/sites-available/mvc.conf
-    
     ```
     Copy and paste this config:
     
