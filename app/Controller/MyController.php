@@ -10,7 +10,7 @@ class MyController
 {
     public function index($request)
     {
-        //print_r($request->ura);
+
         $rest = [1,2,3];
         View::render('index', compact('request', 'rest'));
     }
@@ -23,11 +23,25 @@ class MyController
     public function user($request)
     {
         $id = $request->id;
-
-        // SQL: SELECT * FROM users WHERE id = :id
-
-        $user = DB::connect('mysql')->query('SELECT * FROM users WHERE id = :id');
+        $currentUser = \App\Models\Users::getUserByID($id);
+        View::render('user', compact('request', 'id','currentUser'));
 
 
+    }
+
+    public function users($request)
+    {
+       // print_r($request);
+      //  echo "USERS";
+        $users = \App\Models\Users::getAll();
+        View::render('users', compact('request', 'users'));
+    }
+
+    public function user_create($request)
+    {
+        // print_r($request);
+        //  echo "USERS";
+        $users = \App\Models\Users::getAll();
+        View::render('user-create', compact('request', 'users'));
     }
 }
