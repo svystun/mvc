@@ -1,51 +1,55 @@
-<?php namespace App;
+<?php namespace App\Models;
 
+use PDO;
 
 /**
  * Class DB
  * @package App
  */
-class DB
+abstract class DB
 {
-    const IP = '127.0.0.1';
-    const DB_NAME = 'demo';
-    const USER = 'root';
-    const PASS = 'root';
+    /**
+     * @var null
+     */
+    private static $instance = null;
 
-    public static $connections = [
-        'mysqli' => [
-            'IP' => '127.0.0.2'
-            //
-            //
-        ],
-        'mysql' => [
-            //
-            //
-            //
-        ]
+    /**
+     * @var array
+     */
+    private static $db = [
+        'name' => 'bgcheck',
+        'host' => '127.0.0.1',
+        'user' => 'root',
+        'pass' => 'root'
     ];
 
-    private static $_instances = [];
-
-    final private function __construct () {}
-    final private function __clone() {}
-    final private function __wakeup() {}
-
-    final public static function getInstance() {
-        $className = get_called_class();
-        self::$_instances[$className] = self::$_instances[$className] ?? new static();
-        return self::$_instances[$className];
+    /**
+     * Connection to DB
+     *
+     * @return PDO|null
+     */
+    public static function connect() {
+        if (self::$instance == null) {
+            self::$instance = new PDO('mysql:host='.self::$db['host'].';dbname='.self::$db['name'],
+                self::$db['user'],
+                self::$db['pass']
+            );
+        }
+        return self::$instance;
     }
 
-    public static function connect(string $view = '', $args)
-    {
+    /**
+     * Prevent cloning of the instance
+     */
+    private function __clone() {}
 
+    /**
+     * Prevent unserialize of the *Singleton*
+     */
+    private function __wakeup() {}
 
-        $content = $view . '.tpl.php';
-        if (is_array($args) && count($args))extract($args, EXTR_OVERWRITE);
-        require('Views/layouts/master.tpl.php');
-    }
-
-
-
+    /**
+     * Prevent creating a new instance via the `new` operator from outside of this class.
+     */
+    private function __construct() {}
 }

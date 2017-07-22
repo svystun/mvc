@@ -1,6 +1,6 @@
 <?php namespace App\Controller;
 
-use App\View;
+use App\{View, DB};
 
 /**
  * Class MyController
@@ -24,10 +24,10 @@ class MyController
     {
         $id = $request->id;
 
-        // SQL: SELECT * FROM users WHERE id = :id
+        $db = DB::connect()->query('SELECT * FROM users');
 
-        $user = DB::connect('mysql')->query('SELECT * FROM users WHERE id = :id');
-
-
+        while($row = $db->fetch(\PDO::FETCH_ASSOC)) {
+            echo $row['id'] . ' ' . $row['name'];
+        }
     }
 }
