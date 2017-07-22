@@ -24,10 +24,16 @@ class MyController
     {
         $id = $request->id;
 
-        $db = DB::connect()->query('SELECT * FROM users');
+        $db = DB::connect()->query('SELECT * FROM users')->get();
 
         while($row = $db->fetch(\PDO::FETCH_ASSOC)) {
             echo $row['id'] . ' ' . $row['name'];
         }
+    }
+
+    public function users()
+    {
+        $users = DB::connect()->all();
+        print_r($users);
     }
 }

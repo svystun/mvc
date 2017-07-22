@@ -52,4 +52,12 @@ abstract class DB
      * Prevent creating a new instance via the `new` operator from outside of this class.
      */
     private function __construct() {}
+
+    public function all()
+    {
+        $sth = self::$instance->prepare("SELECT name, colour FROM fruit");
+        $sth->execute();
+
+        return $sth->fetchAll();
+    }
 }
