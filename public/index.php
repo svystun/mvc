@@ -32,7 +32,7 @@ class App
 
     public function run()
     {
-        $route = $_SERVER['REDIRECT_URL'];
+        $route = strtok($_SERVER["REQUEST_URI"],'?');
         if (! array_key_exists($route, $this->routes)){
             throw new Exception('Route not found!');
         }
