@@ -13,7 +13,10 @@ class DB
      * @var null
      */
     protected static $pdo = null;
-    protected static $table = 'users';
+    /**
+     * @var null
+     */
+    protected static $table = null;
 
     /**
      * Connection to DB
@@ -32,6 +35,11 @@ class DB
         return new static();
     }
 
+    /**
+     *
+     * RETURN new PDO
+     * @return null|PDO
+     */
     public static function getDB()
     {
         static $db = null;
@@ -70,11 +78,111 @@ class DB
     {
     }
 
+    /**
+     * Get all form table
+     * @return array
+     *
+     */
     public function all()
     {
         $db = self::$pdo;
-        $stmt = $db->query('SELECT * FROM '. self::$table);
+        $stmt = $db->query('SELECT * FROM ' . static::$table);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Get row form table by ID
+     * @param $id
+     * @return mixed
+     */
+    public function getRowById($id)
+    {
+        $db = self::$pdo;
+        $stmt = $db->query('SELECT * FROM ' . static::$table . ' WHERE id =' . $id);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Insert new row in table
+     * @param $parameters array
+     */
+    public function insert($parameters)
+    {
+        $table = static::$table;
+        $sql = sprintf(
+            'insert into %s (%s) values (%s)',
+            $table,
+            implode(', ', array_keys($parameters)),
+            ':' . implode(', :', array_keys($parameters))
+        );
+        try {
+            $statement = self::$pdo->prepare($sql);
+            $statement->execute($parameters);
+        } catch (\Exception $e) {
+            //
+        }
+    }
+
+
+    /**
+     *
+     * Update row in table
+     * @param $id
+     * @param $parameters
+     */
+    public function update($id, $parameters)
+    {
+        $pdo = self::$pdo;
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $table = static::$table;
+        $updateQuery = "";
+
+        $keys = array_keys($parameters);
+        $updateArr = array_values($parameters);
+
+
+        foreach ($keys as $key) {
+            $trim = trim($key, "'");
+
+            // if last item dont put comma
+            if ($key === end($keys)) {
+                $updateQuery .= "{$trim}= ? ";
+            } else {
+                $updateQuery .= "{$trim}= ? ,";
+            }
+
+        }
+
+        $updateArr[] = $id;
+
+        $sql = sprintf(
+            'UPDATE %s set %s WHERE id= ?',
+            $table,
+            $updateQuery
+
+        );
+        try {
+            $statement = $pdo->prepare($sql);
+            $statement->execute($updateArr);
+        } catch (\Exception $e) {
+            //
+        }
+    }
+
+    /**
+     * delete row by ID
+     * @param $id
+     */
+    public function delete($id)
+    {
+        $pdo = self::$pdo;
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $table = static::$table;
+        $sql = "DELETE FROM {$table}  WHERE id = ?";
+        $statement = $pdo->prepare($sql);
+        $statement->execute(array($id));
+    }
+
 
 }

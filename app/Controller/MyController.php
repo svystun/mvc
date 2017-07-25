@@ -2,6 +2,7 @@
 
 use App\View;
 use App\Models\DB;
+use App\Models\Users;
 
 
 /**
@@ -13,7 +14,7 @@ class MyController
     public function index($request)
     {
         //print_r($request->ura);
-        $rest = [1,2,3];
+        $rest = [1, 2, 3];
         View::render('index', compact('request', 'rest'));
     }
 
@@ -26,16 +27,62 @@ class MyController
     {
         $id = $request->id;
 
-        $db = DB::connect()->all();
+        $User = Users::connect()
+            ->getRowById($id);
 
-        while($row = $db->fetch(\PDO::FETCH_ASSOC)) {
-            echo $row['id'] . ' ' . $row['name'];
-        }
+        print_r($User);
+    }
+
+    public function user_create($request)
+    {
+        $id = $request->id;
+        $name = $request->name;
+        $email = $request->email;
+        $company = $request->company;
+        $params = compact('id', 'name', 'email', 'company');
+
+        $User = Users::connect()
+            ->insert($params);
+
+//        $users = Users::connect()
+//            ->all();
+
+        //     print_r($users);
+        print_r($User);
+
+    }
+
+    public function user_update($request)
+    {
+        $id = $request->id;
+
+        $params = $request->params;
+        //   print_r($request);
+        //   print_r($id);
+        //  print_r($params);
+        Users::connect()
+            ->update($id, $params);
+
+
+    }
+
+    public function user_delete($request)
+    {
+        $id = $request->id;
+
+        //   print_r($request);
+        //   print_r($id);
+        //  print_r($params);
+        Users::connect()
+            ->delete($id);
+
+
     }
 
     public function users($request)
     {
-        $users =  \App\Models\Users::connect()->all();
-        print_r($users);
+        $users = Users::connect()
+            ->all();
+        //  print_r($users);
     }
 }
