@@ -83,6 +83,6 @@ class MyController
     {
         $users = Users::connect()
             ->all();
-        //  print_r($users);
+          print_r($users);
     }
 }

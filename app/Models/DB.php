@@ -13,15 +13,21 @@ class DB
      * @var null
      */
     protected static $pdo = null;
+
     /**
      * @var null
      */
     protected static $table = null;
 
     /**
+     * @var null
+     */
+    protected static $instance = null;
+
+    /**
      * Connection to DB
      *
-     * @return new static
+     * @return new
      */
     public static function connect()
     {
@@ -32,7 +38,7 @@ class DB
             );
         }
 
-        return new static();
+        return  self::$instance = new static();
     }
 
     /**
