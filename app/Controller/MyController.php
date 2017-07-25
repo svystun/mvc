@@ -1,6 +1,8 @@
 <?php namespace App\Controller;
 
-use App\{View, DB};
+use App\View;
+use App\Models\DB;
+
 
 /**
  * Class MyController
@@ -24,16 +26,16 @@ class MyController
     {
         $id = $request->id;
 
-        $db = DB::connect()->query('SELECT * FROM users')->get();
+        $db = DB::connect()->all();
 
         while($row = $db->fetch(\PDO::FETCH_ASSOC)) {
             echo $row['id'] . ' ' . $row['name'];
         }
     }
 
-    public function users()
+    public function users($request)
     {
-        $users = DB::connect()->all();
+        $users =  \App\Models\Users::connect()->all();
         print_r($users);
     }
 }

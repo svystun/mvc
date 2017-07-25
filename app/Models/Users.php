@@ -6,10 +6,6 @@
  */
 class Users extends DB
 {
-    protected $table = 'users';
+    protected static $table = 'users';
 
-    public static function all()
-    {
-
-    }
 }
