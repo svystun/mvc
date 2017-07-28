@@ -1,5 +1,6 @@
 <?php namespace App\Controller;
 
+use App\Models\Users;
 use App\{View, DB};
 
 /**
@@ -33,7 +34,7 @@ class MyController
 
     public function users()
     {
-        $users = DB::connect()->all();
+        $users = Users::connect()->all();
         print_r($users);
     }
 }

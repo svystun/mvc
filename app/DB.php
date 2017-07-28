@@ -1,4 +1,4 @@
-<?php namespace App\Models;
+<?php namespace App;
 
 use PDO;
 
@@ -12,6 +12,7 @@ abstract class DB
      * @var null
      */
     private static $instance = null;
+    private static $pdo = null;
 
     /**
      * @var array
@@ -29,11 +30,9 @@ abstract class DB
      * @return PDO|null
      */
     public static function connect() {
+
         if (self::$instance == null) {
-            self::$instance = new PDO('mysql:host='.self::$db['host'].';dbname='.self::$db['name'],
-                self::$db['user'],
-                self::$db['pass']
-            );
+            self::$instance = new PDO('mysql:host='.self::$db['host'].';dbname='.self::$db['name'], self::$db['user'], self::$db['pass']);
         }
         return self::$instance;
     }
