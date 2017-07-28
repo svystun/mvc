@@ -25,10 +25,10 @@ class MyController
     {
         $id = $request->id;
 
-        $db = DB::connect()->query('SELECT * FROM users')->get();
+        $users = Users::connect()->find($id);
 
-        while($row = $db->fetch(\PDO::FETCH_ASSOC)) {
-            echo $row['id'] . ' ' . $row['name'];
+        foreach ($users as $user){
+            print_r($user);
         }
     }
 
