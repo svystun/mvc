@@ -9,9 +9,4 @@ use App\DB;
 class Users extends DB
 {
     protected $table = 'users';
-
-    public function all()
-    {
-
-    }
 }
