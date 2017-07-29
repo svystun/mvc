@@ -1,6 +1,7 @@
 <?php namespace App\Controller;
 
-use App\View;
+use App\Models\Users;
+use App\{View};
 
 /**
  * Class MyController
@@ -24,10 +25,19 @@ class MyController
     {
         $id = $request->id;
 
-        // SQL: SELECT * FROM users WHERE id = :id
+        $user = Users::connect()->find($id);
+        print_r($user);
+    }
 
-        $user = DB::connect('mysql')->query('SELECT * FROM users WHERE id = :id');
+    public function activated()
+    {
+        $users = Users::connect()->getActivatedUsers();
+        print_r($users);
+    }
 
-
+    public function users()
+    {
+        $users = Users::connect()->all();
+        print_r($users);
     }
 }
