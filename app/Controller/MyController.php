@@ -1,7 +1,7 @@
 <?php namespace App\Controller;
 
 use App\Models\Users;
-use App\{View, DB};
+use App\{View};
 
 /**
  * Class MyController
@@ -25,11 +25,14 @@ class MyController
     {
         $id = $request->id;
 
-        $users = Users::connect()->find($id);
+        $user = Users::connect()->find($id);
+        print_r($user);
+    }
 
-        foreach ($users as $user){
-            print_r($user);
-        }
+    public function activated()
+    {
+        $users = Users::connect()->getActivatedUsers();
+        print_r($users);
     }
 
     public function users()
