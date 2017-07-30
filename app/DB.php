@@ -1,51 +1,121 @@
 <?php namespace App;
 
+use PDO;
 
 /**
  * Class DB
  * @package App
  */
-class DB
+abstract class DB
 {
-    const IP = '127.0.0.1';
-    const DB_NAME = 'demo';
-    const USER = 'root';
-    const PASS = 'root';
+    /**
+     * @var null
+     */
+    protected static $instance = null;
 
-    public static $connections = [
-        'mysqli' => [
-            'IP' => '127.0.0.2'
-            //
-            //
-        ],
-        'mysql' => [
-            //
-            //
-            //
-        ]
+    /**
+     * @var null
+     */
+    protected $db = null;
+
+    /**
+     * @var null
+     */
+    protected $table = null;
+
+    /**
+     * @var array
+     */
+    private static $conf = [
+        'name' => 'demo',
+        'host' => '127.0.0.1',
+        'user' => 'root',
+        'pass' => 'root'
     ];
 
-    private static $_instances = [];
+    /**
+     * Connection to DB
+     *
+     * @return null|static
+     */
+    public static function connect() {
 
-    final private function __construct () {}
-    final private function __clone() {}
-    final private function __wakeup() {}
-
-    final public static function getInstance() {
-        $className = get_called_class();
-        self::$_instances[$className] = self::$_instances[$className] ?? new static();
-        return self::$_instances[$className];
+        if (is_null(self::$instance)) {
+            $instance = new static();
+            $instance->setDB();
+            self::$instance = $instance;
+        }
+        return self::$instance;
     }
 
-    public static function connect(string $view = '', $args)
+    /**
+     * Prevent cloning of the instance
+     */
+    private function __clone() {}
+
+    /**
+     * Prevent unserialize of the *Singleton*
+     */
+    private function __wakeup() {}
+
+    /**
+     * Prevent creating a new instance via the `new` operator from outside of this class.
+     */
+    private function __construct() {}
+
+    /**
+     * Set database connection
+     */
+    public function setDB()
     {
-
-
-        $content = $view . '.tpl.php';
-        if (is_array($args) && count($args))extract($args, EXTR_OVERWRITE);
-        require('Views/layouts/master.tpl.php');
+        if (is_null($this->db)) {
+            $pdo = new PDO('mysql:host='.self::$conf['host'].';dbname='.self::$conf['name'], self::$conf['user'], self::$conf['pass']);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->db = $pdo;
+        }
     }
 
+    /**
+     * Get all data from table
+     *
+     * @param int $type
+     * @return mixed
+     */
+    public function all($type = PDO::FETCH_OBJ)
+    {
+        $sth = $this->db->prepare(sprintf("SELECT * FROM %s", $this->table));
+        $sth->execute();
 
+        return $sth->fetchAll($type);
+    }
 
+    /**
+     * Execute SELECT query
+     *
+     * @param string $sql
+     * @param int $type
+     * @return mixed
+     */
+    public function query($sql = '', $type = PDO::FETCH_OBJ)
+    {
+        $sth = $this->db->prepare($sql);
+        $sth->execute();
+
+        return $sth->fetchAll($type);
+    }
+
+    /**
+     * Find by id
+     *
+     * @param int $id
+     * @param int $type
+     * @return mixed
+     */
+    public function find(int $id = 0, $type = PDO::FETCH_OBJ)
+    {
+        $sth = $this->db->prepare(sprintf("SELECT * FROM %s WHERE id = :id", $this->table));
+        $sth->execute(['id' => $id]);
+
+        return $sth->fetch($type);
+    }
 }
